@@ -2,16 +2,19 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { metadata as seoMetadata } from './metadata';
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   ...seoMetadata,
-  metadataBase: new URL('https://your-domain.com'),
+  metadataBase: new URL(
+    process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:3000' 
+      : 'https://your-domain.com'
+  ),
   openGraph: {
-    title: 'Airbnb Revenue Calculator & Dynamic Pricing Tool',
-    description: 'Calculate your potential Airbnb revenue with our free AI-powered tool',
-    type: 'website',
+    ...seoMetadata.openGraph,
     url: 'https://your-domain.com/calculator',
     images: [
       {
@@ -23,9 +26,8 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
+    ...seoMetadata.twitter,
     card: 'summary_large_image',
-    title: 'Airbnb Revenue Calculator',
-    description: 'Free Airbnb revenue calculator with AI-powered pricing recommendations',
     images: ['https://your-domain.com/twitter-image.jpg'],
   },
   robots: {
@@ -52,8 +54,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={inter.className}>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
